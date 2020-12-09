@@ -246,7 +246,7 @@ where
         self.delay.delay_ms(duration_ms)
     }
 
-    fn init(mut self) -> Result<Self, ControllerError<I2C, ATP>> {
+    pub fn soft_reinit(&mut self) -> Result<(), ControllerError<I2C, ATP>> {
         // perform a soft reset
         self.sensor.soft_reset()?;
         self.delay_ms(10);
@@ -254,7 +254,11 @@ where
         // update config
 
         self.update_configuration(self.config)?;
+        Ok(())
+    }
 
+    fn init(mut self) -> Result<Self, ControllerError<I2C, ATP>> {
+        self.soft_reinit()?;
         // done
 
         Ok(self)
